@@ -32,6 +32,7 @@ except ImportError as e:
     ''')
 
 import math
+import random
 import numpy as np
 
 RAD2DEG = 57.29577951308232
@@ -345,7 +346,18 @@ class SimpleImageViewer(object):
                 scale = self.maxwidth / width
                 width = int(scale * width)
                 height = int(scale * height)
-            self.window = get_window(width=width, height=height, display=self.display, vsync=False, resizable=True)
+
+            self.window = get_window(
+                width=width, height=height,
+                display=self.display,
+                vsync=False, resizable=True)
+
+            # randomly displace the window
+            screen = self.window.screen
+            pos_y = random.randint(0, max(screen.height - height, 0))
+            pos_x = random.randint(0, max(screen.width - width, 0))
+            self.window.set_location(screen.x + pos_x, screen.y + pos_y)
+
             self.width = width
             self.height = height
             self.isopen = True
