@@ -69,6 +69,13 @@ class Viewer(object):
         self.width = width
         self.height = height
         self.window = get_window(width=width, height=height, display=display)
+
+        # randomly displace the window
+        screen = self.window.screen
+        pos_y = random.randint(0, max(screen.height - height, 0))
+        pos_x = random.randint(0, max(screen.width - width, 0))
+        self.window.set_location(screen.x + pos_x, screen.y + pos_y)
+
         self.window.on_close = self.window_closed_by_user
         self.isopen = True
         self.geoms = []
