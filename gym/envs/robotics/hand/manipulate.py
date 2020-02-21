@@ -1,7 +1,7 @@
 import os
 import numpy as np
 
-from gym import utils, error
+from gym import error
 from gym.envs.robotics import rotations, hand_env
 from gym.envs.robotics.utils import robot_get_obs
 
@@ -272,9 +272,8 @@ class ManipulateEnv(hand_env.HandEnv):
         }
 
 
-class HandBlockEnv(ManipulateEnv, utils.EzPickle):
+class HandBlockEnv(ManipulateEnv):
     def __init__(self, target_position='random', target_rotation='xyz', reward_type='sparse'):
-        utils.EzPickle.__init__(self, target_position, target_rotation, reward_type)
         ManipulateEnv.__init__(self,
             model_path=MANIPULATE_BLOCK_XML, target_position=target_position,
             target_rotation=target_rotation,
@@ -282,9 +281,8 @@ class HandBlockEnv(ManipulateEnv, utils.EzPickle):
             reward_type=reward_type)
 
 
-class HandEggEnv(ManipulateEnv, utils.EzPickle):
+class HandEggEnv(ManipulateEnv):
     def __init__(self, target_position='random', target_rotation='xyz', reward_type='sparse'):
-        utils.EzPickle.__init__(self, target_position, target_rotation, reward_type)
         ManipulateEnv.__init__(self,
             model_path=MANIPULATE_EGG_XML, target_position=target_position,
             target_rotation=target_rotation,
@@ -292,9 +290,8 @@ class HandEggEnv(ManipulateEnv, utils.EzPickle):
             reward_type=reward_type)
 
 
-class HandPenEnv(ManipulateEnv, utils.EzPickle):
+class HandPenEnv(ManipulateEnv):
     def __init__(self, target_position='random', target_rotation='xyz', reward_type='sparse'):
-        utils.EzPickle.__init__(self, target_position, target_rotation, reward_type)
         ManipulateEnv.__init__(self,
             model_path=MANIPULATE_PEN_XML, target_position=target_position,
             target_rotation=target_rotation,

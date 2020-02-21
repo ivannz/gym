@@ -1,11 +1,10 @@
 import numpy as np
-from gym import utils
 from gym.envs.mujoco import mujoco_env
 
-class SwimmerEnv(mujoco_env.MujocoEnv, utils.EzPickle):
+
+class SwimmerEnv(mujoco_env.MujocoEnv):
     def __init__(self):
         mujoco_env.MujocoEnv.__init__(self, 'swimmer.xml', 4)
-        utils.EzPickle.__init__(self)
 
     def step(self, a):
         ctrl_cost_coeff = 0.0001

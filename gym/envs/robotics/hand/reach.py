@@ -1,7 +1,6 @@
 import os
 import numpy as np
 
-from gym import utils
 from gym.envs.robotics import hand_env
 from gym.envs.robotics.utils import robot_get_obs
 
@@ -52,12 +51,11 @@ def goal_distance(goal_a, goal_b):
     return np.linalg.norm(goal_a - goal_b, axis=-1)
 
 
-class HandReachEnv(hand_env.HandEnv, utils.EzPickle):
+class HandReachEnv(hand_env.HandEnv):
     def __init__(
         self, distance_threshold=0.01, n_substeps=20, relative_control=False,
         initial_qpos=DEFAULT_INITIAL_QPOS, reward_type='sparse',
     ):
-        utils.EzPickle.__init__(**locals())
         self.distance_threshold = distance_threshold
         self.reward_type = reward_type
 

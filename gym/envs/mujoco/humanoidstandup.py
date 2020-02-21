@@ -1,11 +1,9 @@
 from gym.envs.mujoco import mujoco_env
-from gym import utils
 import numpy as np
 
-class HumanoidStandupEnv(mujoco_env.MujocoEnv, utils.EzPickle):
+class HumanoidStandupEnv(mujoco_env.MujocoEnv):
     def __init__(self):
         mujoco_env.MujocoEnv.__init__(self, 'humanoidstandup.xml', 5)
-        utils.EzPickle.__init__(self)
 
     def _get_obs(self):
         data = self.sim.data

@@ -6,4 +6,3 @@ not intended as API functions, and will not remain stable over time.
 # We want this since we use `utils` during our import-time sanity checks
 # that verify that our dependencies are actually present.
 from .colorize import colorize
-from .ezpickle import EzPickle

@@ -1,6 +1,5 @@
 import numpy as np
 from gym.envs.mujoco import mujoco_env
-from gym import utils
 
 
 DEFAULT_CAMERA_CONFIG = {
@@ -17,7 +16,7 @@ def mass_center(model, sim):
     return (np.sum(mass * xpos, axis=0) / np.sum(mass))[0:2].copy()
 
 
-class HumanoidEnv(mujoco_env.MujocoEnv, utils.EzPickle):
+class HumanoidEnv(mujoco_env.MujocoEnv):
     def __init__(self,
                  xml_file='humanoid.xml',
                  forward_reward_weight=1.25,
@@ -29,8 +28,6 @@ class HumanoidEnv(mujoco_env.MujocoEnv, utils.EzPickle):
                  healthy_z_range=(1.0, 2.0),
                  reset_noise_scale=1e-2,
                  exclude_current_positions_from_observation=True):
-        utils.EzPickle.__init__(**locals())
-
         self._forward_reward_weight = forward_reward_weight
         self._ctrl_cost_weight = ctrl_cost_weight
         self._contact_cost_weight = contact_cost_weight

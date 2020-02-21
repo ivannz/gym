@@ -1,7 +1,7 @@
 import os
 import numpy as np
 
-from gym import utils, error, spaces
+from gym import error, spaces
 from gym.envs.robotics.hand import manipulate
 
 # Ensure we get the path separator correct on windows
@@ -94,9 +94,8 @@ class ManipulateTouchSensorsEnv(manipulate.ManipulateEnv):
         }
 
 
-class HandBlockTouchSensorsEnv(ManipulateTouchSensorsEnv, utils.EzPickle):
+class HandBlockTouchSensorsEnv(ManipulateTouchSensorsEnv):
     def __init__(self, target_position='random', target_rotation='xyz', touch_get_obs='sensordata', reward_type='sparse'):
-        utils.EzPickle.__init__(self, target_position, target_rotation, touch_get_obs, reward_type)
         ManipulateTouchSensorsEnv.__init__(self,
             model_path=MANIPULATE_BLOCK_XML,
             touch_get_obs=touch_get_obs,
@@ -106,9 +105,8 @@ class HandBlockTouchSensorsEnv(ManipulateTouchSensorsEnv, utils.EzPickle):
             reward_type=reward_type)
 
 
-class HandEggTouchSensorsEnv(ManipulateTouchSensorsEnv, utils.EzPickle):
+class HandEggTouchSensorsEnv(ManipulateTouchSensorsEnv):
     def __init__(self, target_position='random', target_rotation='xyz', touch_get_obs='sensordata', reward_type='sparse'):
-        utils.EzPickle.__init__(self, target_position, target_rotation, touch_get_obs, reward_type)
         ManipulateTouchSensorsEnv.__init__(self,
             model_path=MANIPULATE_EGG_XML,
             touch_get_obs=touch_get_obs,
@@ -118,9 +116,8 @@ class HandEggTouchSensorsEnv(ManipulateTouchSensorsEnv, utils.EzPickle):
             reward_type=reward_type)
 
 
-class HandPenTouchSensorsEnv(ManipulateTouchSensorsEnv, utils.EzPickle):
+class HandPenTouchSensorsEnv(ManipulateTouchSensorsEnv):
     def __init__(self, target_position='random', target_rotation='xyz', touch_get_obs='sensordata', reward_type='sparse'):
-        utils.EzPickle.__init__(self, target_position, target_rotation, touch_get_obs, reward_type)
         ManipulateTouchSensorsEnv.__init__(self,
             model_path=MANIPULATE_PEN_XML,
             touch_get_obs=touch_get_obs,

@@ -1,11 +1,9 @@
 import numpy as np
-from gym import utils
 from gym.envs.mujoco import mujoco_env
 
-class HalfCheetahEnv(mujoco_env.MujocoEnv, utils.EzPickle):
+class HalfCheetahEnv(mujoco_env.MujocoEnv):
     def __init__(self):
         mujoco_env.MujocoEnv.__init__(self, 'half_cheetah.xml', 5)
-        utils.EzPickle.__init__(self)
 
     def step(self, action):
         xposbefore = self.sim.data.qpos[0]

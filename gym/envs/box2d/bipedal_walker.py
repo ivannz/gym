@@ -7,7 +7,7 @@ from Box2D.b2 import (edgeShape, circleShape, fixtureDef, polygonShape, revolute
 
 import gym
 from gym import spaces
-from gym.utils import colorize, seeding, EzPickle
+from gym.utils import colorize, seeding
 
 # This is simple 4-joints walker robot environment.
 #
@@ -101,7 +101,7 @@ class ContactDetector(contactListener):
             if leg in [contact.fixtureA.body, contact.fixtureB.body]:
                 leg.ground_contact = False
 
-class BipedalWalker(gym.Env, EzPickle):
+class BipedalWalker(gym.Env):
     metadata = {
         'render.modes': ['human', 'rgb_array'],
         'video.frames_per_second' : FPS
@@ -110,7 +110,6 @@ class BipedalWalker(gym.Env, EzPickle):
     hardcore = False
 
     def __init__(self):
-        EzPickle.__init__(self)
         self.seed()
         self.viewer = None
 

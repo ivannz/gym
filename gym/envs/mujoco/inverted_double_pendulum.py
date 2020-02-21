@@ -1,12 +1,10 @@
 import numpy as np
-from gym import utils
 from gym.envs.mujoco import mujoco_env
 
-class InvertedDoublePendulumEnv(mujoco_env.MujocoEnv, utils.EzPickle):
+class InvertedDoublePendulumEnv(mujoco_env.MujocoEnv):
 
     def __init__(self):
         mujoco_env.MujocoEnv.__init__(self, 'inverted_double_pendulum.xml', 5)
-        utils.EzPickle.__init__(self)
 
     def step(self, action):
         self.do_simulation(action, self.frame_skip)

@@ -1,6 +1,5 @@
 import numpy as np
 from gym.envs.mujoco import mujoco_env
-from gym import utils
 
 
 DEFAULT_CAMERA_CONFIG = {
@@ -11,7 +10,7 @@ DEFAULT_CAMERA_CONFIG = {
 }
 
 
-class HopperEnv(mujoco_env.MujocoEnv, utils.EzPickle):
+class HopperEnv(mujoco_env.MujocoEnv):
     def __init__(self,
                  xml_file='hopper.xml',
                  forward_reward_weight=1.0,
@@ -23,8 +22,6 @@ class HopperEnv(mujoco_env.MujocoEnv, utils.EzPickle):
                  healthy_angle_range=(-0.2, 0.2),
                  reset_noise_scale=5e-3,
                  exclude_current_positions_from_observation=True):
-        utils.EzPickle.__init__(**locals())
-
         self._forward_reward_weight = forward_reward_weight
 
         self._ctrl_cost_weight = ctrl_cost_weight

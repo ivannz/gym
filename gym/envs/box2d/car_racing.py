@@ -7,7 +7,7 @@ from Box2D.b2 import (edgeShape, circleShape, fixtureDef, polygonShape, revolute
 import gym
 from gym import spaces
 from gym.envs.box2d.car_dynamics import Car
-from gym.utils import colorize, seeding, EzPickle
+from gym.utils import colorize, seeding
 
 import pyglet
 from pyglet import gl
@@ -100,14 +100,13 @@ class FrictionDetector(contactListener):
             obj.tiles.remove(tile)
             # print tile.road_friction, "DEL", len(obj.tiles) -- should delete to zero when on grass (this works)
 
-class CarRacing(gym.Env, EzPickle):
+class CarRacing(gym.Env):
     metadata = {
         'render.modes': ['human', 'rgb_array', 'state_pixels'],
         'video.frames_per_second' : FPS
     }
 
     def __init__(self, verbose=1):
-        EzPickle.__init__(self)
         self.seed()
         self.contactListener_keepref = FrictionDetector(self)
         self.world = Box2D.b2World((0,0), contactListener=self.contactListener_keepref)

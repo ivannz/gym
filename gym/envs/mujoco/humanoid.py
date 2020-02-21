@@ -1,16 +1,14 @@
 import numpy as np
 from gym.envs.mujoco import mujoco_env
-from gym import utils
 
 def mass_center(model, sim):
     mass = np.expand_dims(model.body_mass, 1)
     xpos = sim.data.xipos
     return (np.sum(mass * xpos, 0) / np.sum(mass))[0]
 
-class HumanoidEnv(mujoco_env.MujocoEnv, utils.EzPickle):
+class HumanoidEnv(mujoco_env.MujocoEnv):
     def __init__(self):
         mujoco_env.MujocoEnv.__init__(self, 'humanoid.xml', 5)
-        utils.EzPickle.__init__(self)
 
     def _get_obs(self):
         data = self.sim.data

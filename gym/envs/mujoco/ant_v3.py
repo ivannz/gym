@@ -1,5 +1,4 @@
 import numpy as np
-from gym import utils
 from gym.envs.mujoco import mujoco_env
 
 
@@ -8,7 +7,7 @@ DEFAULT_CAMERA_CONFIG = {
 }
 
 
-class AntEnv(mujoco_env.MujocoEnv, utils.EzPickle):
+class AntEnv(mujoco_env.MujocoEnv):
     def __init__(self,
                  xml_file='ant.xml',
                  ctrl_cost_weight=0.5,
@@ -19,8 +18,6 @@ class AntEnv(mujoco_env.MujocoEnv, utils.EzPickle):
                  contact_force_range=(-1.0, 1.0),
                  reset_noise_scale=0.1,
                  exclude_current_positions_from_observation=True):
-        utils.EzPickle.__init__(**locals())
-
         self._ctrl_cost_weight = ctrl_cost_weight
         self._contact_cost_weight = contact_cost_weight
 

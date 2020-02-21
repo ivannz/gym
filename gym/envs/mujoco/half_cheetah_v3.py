@@ -1,5 +1,4 @@
 import numpy as np
-from gym import utils
 from gym.envs.mujoco import mujoco_env
 
 
@@ -8,15 +7,13 @@ DEFAULT_CAMERA_CONFIG = {
 }
 
 
-class HalfCheetahEnv(mujoco_env.MujocoEnv, utils.EzPickle):
+class HalfCheetahEnv(mujoco_env.MujocoEnv):
     def __init__(self,
                  xml_file='half_cheetah.xml',
                  forward_reward_weight=1.0,
                  ctrl_cost_weight=0.1,
                  reset_noise_scale=0.1,
                  exclude_current_positions_from_observation=True):
-        utils.EzPickle.__init__(**locals())
-
         self._forward_reward_weight = forward_reward_weight
 
         self._ctrl_cost_weight = ctrl_cost_weight
