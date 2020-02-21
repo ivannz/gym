@@ -1,4 +1,7 @@
 class EzPickle(object):
+    def __init_subclass__(cls):
+        raise RuntimeError(f"subclassing {cls}.")
+
     """Objects that are pickled and unpickled via their constructor
     arguments.
 

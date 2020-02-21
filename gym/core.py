@@ -1,4 +1,7 @@
 import gym
+import inspect
+from collections import defaultdict
+
 from gym import error
 from gym.utils import closer
 
@@ -144,6 +147,9 @@ class Env(object):
         else:
             return '<{}<{}>>'.format(type(self).__name__, self.spec.id)
 
+    def __repr__(self):
+        return str(self)
+
     def __enter__(self):
         """Support with-statement for the environment. """
         return self
@@ -153,6 +159,70 @@ class Env(object):
         self.close()
         # propagate exception
         return False
+
+    @classmethod
+    def _get_param_names(cls):
+        """Get parameter names from the constructor signature."""
+        if cls.__init__ is object.__init__:
+            return []
+
+        init_signature = inspect.signature(cls.__init__)
+        parameters = [p for p in init_signature.parameters.values()
+                      if p.name != 'self' and p.kind != p.VAR_KEYWORD]
+        if any(p.kind == p.VAR_POSITIONAL for p in parameters):
+            raise RuntimeError(f"some parameters in {cls}.__init__ are"
+                               f" unspecified: `{init_signature}`")
+
+        return sorted([p.name for p in parameters])
+
+    def get_params(self, deep=True):
+        out = dict()
+        for key in self._get_param_names():
+            value = getattr(self, key)
+            if deep and hasattr(value, 'get_params'):
+                deep_items = value.get_params().items()
+                out.update((key + '__' + k, val) for k, val in deep_items)
+            out[key] = value
+        return out
+
+    def set_params(self, **params):
+        if not params:
+            # Simple optimization to gain speed (inspect is slow)
+            return self
+        valid_params = self.get_params(deep=True)
+
+        nested_params = defaultdict(dict)  # grouped by prefix
+        for key, value in params.items():
+            key, delim, sub_key = key.partition('__')
+            if key not in valid_params:
+                raise ValueError(f"Invalid parameter {key} for {self}.")
+
+            if delim:
+                nested_params[key][sub_key] = value
+            else:
+                setattr(self, key, value)
+                valid_params[key] = value
+
+        for key, sub_params in nested_params.items():
+            valid_params[key].set_params(**sub_params)
+
+        return self
+
+    def __getstate__(self):
+        try:
+            state = super().__getstate__()
+
+        except AttributeError:
+            state = self.__dict__.copy()
+
+        return state
+
+    def __setstate__(self, state):
+        try:
+            super().__setstate__(state)
+
+        except AttributeError:
+            self.__dict__.update(state)
 
 
 class GoalEnv(Env):
