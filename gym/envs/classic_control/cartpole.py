@@ -105,14 +105,26 @@ class CartPoleEnv(gym.Env):
 
         x, x_dot, theta, theta_dot = self.state
         force = self.force_mag if action == 1 else -self.force_mag
+
+        efx, eft = 0, 0
+        if hasattr(self, "external"):
+            efx, eft = self.external.apply()
+
         costheta = math.cos(theta)
         sintheta = math.sin(theta)
 
         # For the interested reader:
         # https://coneural.org/florian/papers/05_cart_pole.pdf
-        temp = (force + self.polemass_length * theta_dot ** 2 * sintheta) / self.total_mass
-        thetaacc = (self.gravity * sintheta - costheta * temp) / (self.length * (4.0 / 3.0 - self.masspole * costheta ** 2 / self.total_mass))
+        temp = (
+            force + self.polemass_length * theta_dot ** 2 * sintheta
+        ) / self.total_mass
+        thetaacc = (self.gravity * sintheta - costheta * temp) / (
+            self.length
+            * (4.0 / 3.0 - self.masspole * costheta ** 2 / self.total_mass))
+        thetaacc += eft
+
         xacc = temp - self.polemass_length * thetaacc * costheta / self.total_mass
+        xacc += efx / self.total_mass
 
         if self.kinematics_integrator == 'euler':
             x = x + self.tau * x_dot
@@ -151,6 +163,9 @@ class CartPoleEnv(gym.Env):
             self.steps_beyond_done += 1
             reward = 0.0
 
+        reward -= max(0, abs(x) - 0.5) * 10  # location stabilization
+        # reward -= max(0, abs(theta) - 0.25) * 10  # pole tip stabilizaton
+
         return np.array(self.state), reward, done, {}
 
     def reset(self):
@@ -159,7 +174,7 @@ class CartPoleEnv(gym.Env):
         return np.array(self.state)
 
     def render(self, mode='human'):
-        screen_width = 600
+        screen_width = 1200
         screen_height = 400
 
         world_width = self.x_threshold * 2
@@ -197,12 +212,66 @@ class CartPoleEnv(gym.Env):
 
             self._pole_geom = pole
 
+            # create event handlers
+            from pyglet.window import mouse, key
+
+            class ExternalForce:
+                def __init__(self, viewer):
+                    self.viewer = viewer
+                    viewer.window.push_handlers(
+                        on_mouse_release=self.on_mouse_release,
+                        on_mouse_drag=self.on_mouse_drag,
+                        on_mouse_press=self.on_mouse_press,
+                    )
+
+                def on_mouse_press(self, x, y, button, modifiers):
+                    if button & mouse.LEFT:
+                        self.point = x, y
+                    return True
+
+                def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
+                    if buttons & mouse.LEFT:
+                        if hasattr(self, "point"):
+                            self.viewer.draw_line(self.point, (x, y))
+                    return True
+
+                def on_mouse_release(self, x, y, button, modifiers):
+                    if button & mouse.LEFT:
+                        if hasattr(self, "point"):
+                            x0, y0 = self.point
+                            del self.point
+                            self.vector = x0 - x, y0 - y
+                    return True
+
+                def apply(self):
+                    if hasattr(self, "vector"):
+                        fx, fy = self.vector
+                        del self.vector
+                        fx = min(max(fx / 2, -100), +100)
+                        fy = min(max(fy * 2, -100), +100)
+                        return fx, fy
+                    return 0, 0
+
+            self.external = ExternalForce(self.viewer)
+
+            def on_key_press(symbol, modifiers):
+                global cartx
+                if symbol == key.SPACE:
+                    x, x_dot, theta, theta_dot = self.state
+                    self.state = 0., 0., 0., 0.
+                return True
+
+            self.viewer.window.push_handlers(on_key_press=on_key_press)
+
         if self.state is None:
             return None
 
         # Edit the pole polygon vertex
         pole = self._pole_geom
-        l, r, t, b = -polewidth / 2, polewidth / 2, polelen - polewidth / 2, -polewidth / 2
+        l, r, t, b = (
+            -polewidth / 2, polewidth / 2,
+            polelen - polewidth / 2, -polewidth / 2
+        )
         pole.v = [(l, b), (l, t), (r, t), (r, b)]
 
         x = self.state
