@@ -280,7 +280,7 @@ class ImageEncoder(object):
 
                      # output
                      '-vf', 'scale=trunc(iw/2)*2:trunc(ih/2)*2',
-                     '-vcodec', 'libx264',
+                     '-vcodec', 'libopenh264',
                      '-pix_fmt', 'yuv420p',
                      '-r', '%d' % self.output_frames_per_sec,
                      self.output_path

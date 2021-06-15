@@ -163,7 +163,7 @@ class CartPoleEnv(gym.Env):
             self.steps_beyond_done += 1
             reward = 0.0
 
-        reward -= max(0, abs(x) - 0.5) * 10  # location stabilization
+        # reward -= max(0, abs(x) - 0.5) * 10  # location stabilization
         # reward -= max(0, abs(theta) - 0.25) * 10  # pole tip stabilizaton
 
         return np.array(self.state), reward, done, {}
